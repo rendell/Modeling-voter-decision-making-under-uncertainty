@@ -1,0 +1,135 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Seat allocation Aruba
+
+## Seat allocation function
+```{r}
+# Define the seat allocation function with detailed output and additional columns
+allocate_seats <- function(votes, parties, total_seats = 21) {
+  # Check if votes and parties are properly aligned
+  if (length(votes) != length(parties)) {
+    stop("Mismatch between number of votes and parties.")
+  }
+  
+  # Ensure votes are numeric
+  votes <- as.numeric(votes)
+  
+  # Step 1: Calculate total votes and kiesdeler
+  total_votes <- sum(votes, na.rm = TRUE)
+  kiesdeler <- round(total_votes / total_seats)
+  
+  # Step 2: Initial seat allocation
+  initial_seats <- floor(votes / kiesdeler)
+  
+  # Step 3: Remaining seats
+  remaining_seats <- total_seats - sum(initial_seats)
+  
+  if (remaining_seats < 0) {
+    stop("Remaining seats calculation error. Check input votes.")
+  }
+  
+  # Step 4: Create seat allocation table
+  seat_allocation <- data.frame(
+    party = parties,
+    votes = votes,
+    vote_percentage = round((votes / total_votes) * 100, 1),
+    initial_seats = initial_seats,
+    total_seats = initial_seats,
+    divisor = votes / (initial_seats + 1)
+  )
+  
+  # Add kiesdeler_gap column
+  seat_allocation$kiesdeler_gap <- ifelse(votes < kiesdeler, kiesdeler - votes, 0)
+  
+  # Step 5: Allocate restzetels
+  for (i in 1:remaining_seats) {
+    eligible_parties <- which(seat_allocation$votes >= kiesdeler)
+    if (length(eligible_parties) == 0) {
+      stop("No eligible parties for restzetels. Check input votes.")
+    }
+    max_index <- eligible_parties[which.max(seat_allocation$divisor[eligible_parties])]
+    seat_allocation$total_seats[max_index] <- seat_allocation$total_seats[max_index] + 1
+    seat_allocation$divisor[max_index] <- seat_allocation$votes[max_index] / 
+                                          (seat_allocation$total_seats[max_index] + 1)
+  }
+  
+  # Summary table
+  summary_table <- data.frame(
+    Kiesdeler = kiesdeler,
+    Total_Votes = total_votes,
+    Total_Initial_Seats = sum(initial_seats),
+    Total_Restzetels = remaining_seats
+  )
+  
+  # Output
+  list(
+    seat_allocation = seat_allocation,
+    summary_table = summary_table
+  )
+}
+```
+
+
+
+# Historical data Aruba - 1985 to present
+```{r}
+# Example usage: votes vector and parties vector
+AUA_votes_1985 <- c(13786,11480,4499,3661,3216)
+AUA_parties_1985 <- c("MEP","AVP","PPA","PDA","ADN")
+
+AUA_votes_1989 <- c(16555,12668,2298,1874,1772,694,171)
+AUA_parties_1989 <- c("MEP","AVP","ADN","PPN","PPA","PDA","AD86")
+
+AUA_votes_1993 <- c(15621,14907,3056,2314,2094,1075,403,397)
+AUA_parties_1993 <- c("AVP","MEP","OLA","ADN","PPA","PPN","PDA","Corona")
+
+AUA_votes_1994 <- c(17963,15437,4415,1751)
+AUA_parties_1994 <- c("AVP","MEP","OLA","PPA")
+
+AUA_votes_1997 <- c(19476,17358,3976,2052,1092,519,268)
+AUA_parties_1997 <- c("AVP","MEP","OLA","PPA","ADN","PARA","MAS")
+
+AUA_votes_2001 <- c(25172,12749,4598,2713,1666,540,531)
+AUA_parties_2001 <- c("MEP","AVP","PPA","OLA","ADA","CLA","ADN")
+
+AUA_votes_2005 <- c(22002,16725,3661,3330,2414,1725,1092,237,131)
+AUA_parties_2005 <- c("MEP","AVP","MPA","RED","PDR","OLA","PPA","MSA","PPT")
+
+AUA_votes_2009 <- c(26476,19804,3144,2444,2378,611,139,125)
+AUA_parties_2009 <- c("AVP","MEP","PDR","MPA","RED","PPA","CURPA","OLA/MSI")
+
+AUA_votes_2013 <- c(506,33103,4518,805,17653,1209)
+AUA_parties_2013 <- c("PPA","AVP","PDR","UPP","MEP","RED")
+
+AUA_votes_2017<-c(2107,656,22061,468,5531,287,4166,23376)
+AUA_parties_2017 <- c("RAIZ", "UPP", "MEP", "CURPA", "POR", "MAS", "RED", "AVP")
+
+AUA_votes_2021 <- c(3410, 1809, 4681, 621, 20700, 249, 661, 18335, 574, 312, 5474, 1784)
+AUA_parties_2021 <- c("A21", "PPA", "MAS", "UPP", "MEP", "HTC", "POR", "AVP", "PP", "CURPA", "RAIZ", "RED")
+
+AUA_votes_2024 
+```
+
+# Curacao
+
+Data retrieved from Wikipedia: https://nl.wikipedia.org/wiki/Statenverkiezingen_Cura%C3%A7ao_2016
+```{r}
+
+parties_2012
+
+
+parties_2016
+
+parties_2017 <- c("MFK","PAR","PNP","MAN","PIN", "KNT","KP", "MP", "PS", "Hustu", "FOP")
+votes_2017 <- c(15706, 18368,3099, 16070, 4200, 7439, 1975, 3880,4028, 3206, 859)
+
+
+parties_2021 <- c("MFK","PAR","PNP","MAN","KEM","TPK","KPK","PIN","KV", "KNT","KP","PD", "KMHN", "MP", "PS")
+votes_2021  <- c(23554, 11781, 10573, 5463, 4542, 4413, 3962, 3733, 3541, 3521, 2454, 2391, 2241, 1461, 1216)
+
+
+
+```
