@@ -110,7 +110,9 @@ AUA_parties_2017 <- c("RAIZ", "UPP", "MEP", "CURPA", "POR", "MAS", "RED", "AVP")
 AUA_votes_2021 <- c(3410, 1809, 4681, 621, 20700, 249, 661, 18335, 574, 312, 5474, 1784)
 AUA_parties_2021 <- c("A21", "PPA", "MAS", "UPP", "MEP", "HTC", "POR", "AVP", "PP", "CURPA", "RAIZ", "RED")
 
-AUA_votes_2024 
+AUA_votes_2024 <- c(1722, 3538, 2323, 505, 423, 7349, 1349, 635, 2204, 17572, 17876)
+AUA_parties_2024 <- c("MAS", "PPA", "RAIZ", "HTC", "CURPA", "FUTURO", "LPR", "RED", "A21", "MEP", "AVP")
+
 ```
 
 # Curacao
